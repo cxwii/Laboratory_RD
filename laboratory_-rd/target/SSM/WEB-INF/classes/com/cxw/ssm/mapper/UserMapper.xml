@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cxw.ssm.mapper.UserMapper">
+
+    <!--根据条件查询用户（用以登录,条件是账号和密码）-->
+    <select id="queryUser" parameterType="map" resultType="int">
+        select count(1) from user where username = #{username} and password = #{password}
+    </select>
+
+    <!--查询用户列表，可用以初始页面展示-->
+    <select id="queryUserList" parameterType="map" resultType="user">
+        select * from user
+        <where>
+            <if test="username!=null and username!=''">
+                username like concat('%',#{username},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--根据username查询用户,精确查询-->
+    <select id="queryUserListjiqu" parameterType="map" resultType="user">
+        select * from user where username = #{username}
+    </select>
+
+    <!--查询用户id来获取uid来判断用户权限-->
+    <select id="queryUserID" parameterType="map" resultType="int">
+        select uid from user where id = #{id}
+    </select>
+
+    <!--新增用户，添加uid，username，password，uname,id自增-->
+    <insert id="addUser" parameterType="map" keyProperty="id">
+        INSERT into user
+        (uid, username, password, uname)
+        VALUES
+        (#{uid}, #{username}, #{password}, #{uname})
+    </insert>
+
+    <!--删除用户,根据username删除-->
+    <delete id="delUser" parameterType="map">
+        delete from user where username = #{username}
+    </delete>
+
+    <!--修改用户，根据username修改-->
+    <update id="updateUser" parameterType="map">
+        update user set
+        uid=#{uid}, username=#{username}, password=#{password}, uname=#{uname}
+        where
+        username=#{username}
+    </update>
+
+    <!--修改uid，根据id修改，用来修改权限-->
+    <update id="updateUseruid" parameterType="map">
+        update user set
+        uid=#{uid}
+        where
+        id=#{id}
+    </update>
+
+</mapper>

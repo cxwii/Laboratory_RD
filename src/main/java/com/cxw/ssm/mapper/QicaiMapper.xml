@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.cxw.ssm.mapper.QicaiMapper">
+
+    <!--新增器材-->
+    <insert id="addQicai" parameterType="map">
+        insert into qicai
+        (qicainame, department, inventory, price)
+        value
+        (#{qicainame}, #{department}, #{inventory}, #{price})
+    </insert>
+
+    <!--更新器材-->
+    <update id="editQicai" parameterType="map">
+        update qicai set
+        qicainame = #{qicainame},
+        department = #{department},
+        inventory = #{inventory},
+        price = #{price}
+        where
+        qid = #{qid}
+    </update>
+
+    <!--删除器材-->
+    <delete id="delQicai" parameterType="map">
+        delete from qicai where qid = #{qid}
+    </delete>
+
+    <!--查询器材列表-->
+    <select id="queryQicaiList" parameterType="map" resultType="qicai">
+        select * from qicai
+        <where>
+            <if test="qicainame!=null and qicainame!=''">
+                qicainame like CONCAT('%',#{qicainame},'%')
+            </if>
+
+            <if test="department!=null and department!=''">
+                and department like CONCAT('%',#{department},'%')
+            </if>
+        </where>
+    </select>
+
+    <!--根据qid查询器材,精确查询-->
+    <select id="qingquchaxun" parameterType="map" resultType="qicai">
+        select * from qicai where qid = #{qid}
+    </select>
+
+    <!--借阅器材-->
+    <insert id="addsubQicai" parameterType="map">
+        insert into qicai_sub
+        (uid,qid,subDateTime,subType,returnType)
+        values
+        (#{uid},#{qid},#{subDateTime},#{subType},#{returnType})
+    </insert>
+
+    <!--归还器材-->
+    <update id="returnsubQicai" parameterType="map">
+        update qicai_sub
+        <set>
+            <if test="returnDateTime!=null and returnDateTime!=''">
+                returnDateTime = #{returnDateTime},
+            </if>
+            <if test="subType!=null">
+                subType = #{subType},
+            </if>
+            <if test="returnType!=null">
+                returnType = #{returnType},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--查看借阅器材列表-->
+    <select id="querySubceshi" parameterType="map" resultType="qicaisub">
+        select * from qicai_sub
+        <where>
+            <if test="uid!=null and uid!=''">
+                uid = #{uid}
+            </if>
+            <if test="qid!=null and qid!=''">
+                and qid = #{qid}
+            </if>
+
+            <if test="subDateTime!=null and subDateTime!=''">
+                AND subDateTime like CONCAT('%',#{subDateTime},'%')
+            </if>
+            <if test="returnDateTime!=null and returnDateTime!=''">
+                AND returnDateTime like CONCAT('%',#{returnDateTime},'%')
+            </if>
+            <if test="subType!=null">
+                AND subType = #{subType}
+            </if>
+            <if test="returnType!=null">
+                AND returnType = #{returnType}
+            </if>
+        </where>
+    </select>
+
+    <!--更新器材库存-->
+    <update id="updateInventtoriesceshi" parameterType="map">
+        update qicai set inventory = #{inventory} where qid = #{qid}
+    </update>
+
+</mapper>
